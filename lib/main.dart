@@ -12,7 +12,12 @@ class MyApp extends StatelessWidget {
       title: _title,
       home: Scaffold(
         appBar: AppBar(title: const Text(_title)),
-        body: MyStatefulWidget(),
+        body: Center(
+          child: new ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(20.0),
+              children: [Center(child: MyStatefulWidget())]),
+        ),
       ),
     );
   }
