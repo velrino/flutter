@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-void main() => runApp(MyApp());
+void main() async {
+  List _data = await getJson();
+
+  runApp(MyApp(autoInput: new AutoInputInferface(_data[0]['title'])));
+}
 
 class AutoInputInferface {
   final String label;
@@ -11,20 +18,23 @@ class AutoInputInferface {
 /// This Widget is the main application widget.
 class MyApp extends StatelessWidget {
   static const String _title = 'AutoFront';
+  final AutoInputInferface autoInput;
+  MyApp({Key key, @required this.autoInput}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-     List<Widget>  childrenArray = [];
+    List<Widget> childrenArray = [];
     // const List<Widget> childrenArray = [
     //           new TextWidget(),
     //           InputWidgetState(autoInput: new AutoInputInferface("Lorem")),
     //           InputWidgetState(autoInput: new AutoInputInferface("Ipsum"))
     //         ];
-    const li = [1,2,3];
+    const li = [1, 2, 3];
 
     for (final e in li) {
       childrenArray.add(TextWidget());
+      childrenArray.add(InputWidgetState(
+          autoInput: new AutoInputInferface("${autoInput.label}")));
     }
 
     return MaterialApp(
@@ -38,6 +48,12 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<List> getJson() async {
+  String apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+  http.Response response = await http.get(apiUrl);
+  return json.decode(response.body); // return a List Type
 }
 
 class TextWidget extends StatelessWidget {
