@@ -14,7 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const teste = 'lorem';
+
+     List<Widget>  childrenArray = [];
+    // const List<Widget> childrenArray = [
+    //           new TextWidget(),
+    //           InputWidgetState(autoInput: new AutoInputInferface("Lorem")),
+    //           InputWidgetState(autoInput: new AutoInputInferface("Ipsum"))
+    //         ];
+    const li = [1,2,3];
+
+    for (final e in li) {
+      childrenArray.add(TextWidget());
+    }
 
     return MaterialApp(
       title: _title,
@@ -23,11 +34,7 @@ class MyApp extends StatelessWidget {
         body: ListView(
             shrinkWrap: true,
             padding: const EdgeInsets.all(20.0),
-            children: [
-              TextWidget(),
-              InputWidgetState(autoInput: new AutoInputInferface("Lorem")),
-              InputWidgetState(autoInput: new AutoInputInferface("Ipsum"))
-            ]),
+            children: childrenArray),
       ),
     );
   }
