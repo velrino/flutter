@@ -36,9 +36,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextFormField(
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: -5),
-              hintText: 'Type your email',
+            decoration: InputDecoration(
+              labelText: "Enter Email",
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: BorderSide(),
+              ),
             ),
             validator: (value) {
               if (value.isEmpty) {
@@ -46,7 +50,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               }
               return null;
             },
-            
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
