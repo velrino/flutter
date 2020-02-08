@@ -12,25 +12,23 @@ class MyApp extends StatelessWidget {
       title: _title,
       home: Scaffold(
         appBar: AppBar(title: const Text(_title)),
-        body: Center(
-          child: new ListView(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(20.0),
-              children: [Center(child: MyStatefulWidget())]),
-        ),
+        body: ListView(
+            shrinkWrap: true,
+            padding: const EdgeInsets.all(20.0),
+            children: [InputWidget()]),
       ),
     );
   }
 }
 
-class MyStatefulWidget extends StatefulWidget {
-  MyStatefulWidget({Key key}) : super(key: key);
+class InputWidget extends StatefulWidget {
+  InputWidget({Key key}) : super(key: key);
 
   @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
+  InputWidgetState createState() => InputWidgetState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+class InputWidgetState extends State<InputWidget> {
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -42,7 +40,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         children: <Widget>[
           TextFormField(
             decoration: InputDecoration(
-              labelText: "Enter Email",
+              labelText: "Enter your e-mail",
               fillColor: Colors.white,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
