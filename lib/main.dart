@@ -3,87 +3,98 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-void main() async {
-  List _data = await getJson();
+void main() => runApp(new MyApp());
 
-  runApp(MyApp(autoInput: new AutoInputInferface(_data[0]['title'])));
-}
-
-class AutoInputInferface {
-  final String label;
-
-  AutoInputInferface(this.label);
-}
-
-/// This Widget is the main application widget.
 class MyApp extends StatelessWidget {
-  static const String _title = 'AutoFront';
-  final AutoInputInferface autoInput;
-  MyApp({Key key, @required this.autoInput}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    List<Widget> childrenArray = [];
-    // const List<Widget> childrenArray = [
-    //           new TextWidget(),
-    //           InputWidgetState(autoInput: new AutoInputInferface("Lorem")),
-    //           InputWidgetState(autoInput: new AutoInputInferface("Ipsum"))
-    //         ];
-    const li = [1, 2, 3];
-
-    for (final e in li) {
-      childrenArray.add(TextWidget());
-      childrenArray.add(InputWidgetState(
-          autoInput: new AutoInputInferface("${autoInput.label}")));
-    }
-
-    return MaterialApp(
-      title: _title,
-      home: Scaffold(
-        appBar: AppBar(title: const Text(_title)),
-        body: ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(20.0),
-            children: childrenArray),
+    return new MaterialApp(
+      title: 'AutoFront',
+      theme: new ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: new MyHomePage(),
     );
   }
 }
 
-Future<List> getJson() async {
-  String apiUrl = 'https://jsonplaceholder.typicode.com/posts';
-  http.Response response = await http.get(apiUrl);
-  return json.decode(response.body); // return a List Type
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => new _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    var futureBuilder = new FutureBuilder(
+      future: _getData(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return createListView(context, snapshot);
+      },
+    );
+
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Home Page"),
+      ),
+      body: futureBuilder,
+    );
+  }
+
+  Future<List<String>> _getData() async {
+    var values = new List<String>();
+    String apiUrl = 'http://www.mocky.io/v2/5e3e37ed33000052008b09ab';
+    http.Response response = await http.get(apiUrl);
+    final items = json.decode(response.body);
+
+    for (var item in items['page_test']['body']['render']) {
+      values.add(item['type']);
+    }
+    return values;
+  }
+
+  Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
+    List<String> values = snapshot.data;
+    List<Widget> childrenArray = [];
+
+    for (final value in values) {
+      if (value == 'text') {
+        childrenArray
+            .add(TextWidget(autoInput: new AutoTextWidgetInferface(value)));
+      } else if (value == 'input') {
+        childrenArray
+            .add(InputWidgetState(autoInput: new AutoInputInferface(value)));
+      }
+    }
+
+    return new ListView.builder(
+      padding: const EdgeInsets.all(20.0),
+      itemCount: 1,
+      itemBuilder: (BuildContext context, int index) {
+        return new Column(
+          children: childrenArray,
+        );
+      },
+    );
+  }
 }
 
 class TextWidget extends StatelessWidget {
+  final AutoTextWidgetInferface autoInput;
+
+  TextWidget({Key key, @required this.autoInput}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: Text('Hello World'));
+        child: Text(this.autoInput.label));
   }
 }
 
-class ButtonWidget extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>();
+class AutoTextWidgetInferface {
+  final String label;
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: RaisedButton(
-        onPressed: () {
-          // Validate will return true if the form is valid, or false if
-          // the form is invalid.
-          if (_formKey.currentState.validate()) {
-            // Process data.
-          }
-        },
-        child: Text('Submit'),
-      ),
-    );
-  }
+  AutoTextWidgetInferface(this.label);
 }
 
 class InputWidgetState extends StatelessWidget {
@@ -119,4 +130,10 @@ class InputWidgetState extends StatelessWidget {
       ),
     );
   }
+}
+
+class AutoInputInferface {
+  final String label;
+
+  AutoInputInferface(this.label);
 }
